@@ -6,22 +6,32 @@ Allows you create common named_scopes and chain them together with #search and
 
   class Topic
     belongs_to :forum
-  
+    has_many :commented
+    has_many :comments, :through => :commented
     can_search do
       scoped_by :forums
       scoped_by :created, :scope => :date_range
+      scoped_by :comments, :scope => :many
+      scoped_by :name, :scope => :many_like, :on => comments
     end
 
-    # creates these two named scopes
+    # creates these three named scopes
     #   named_scope :by_forums, lambda { |f| {:conditions => {:forum_id => f}} }
     #   named_scope :created,   lambda { |range| {:conditions => ...} }
+    #   named_scope :many_comments, lambda { |q| 
+    #     {:joins => :commented,:conditions => {"commented.comments_key" => q},
+    #      :select => "DISTINCT topics.*"}
+    #   named_scope :many_comments_name_like, lambda { |q| 
+    #     {:joins => :comments,:conditions => ["comments.name LIKE ?", format % q],
+    #      :select => "DISTINCT topics.*"}
   end
-
+  
   Topic.search(:forum => 1)                  # Topic.by_forums(1)
   Topic.search(:forums => [1,2])             # Topic.by_forums([1,2])
   Topic.search(:created => (time1..time2))   # Topic.created(time1..time2)
   Topic.search(:created => \
     {:period => :daily, :start => Time.now}) # Topic.created(Time.now, Time.now + 1.day)
+  Topic.search(:name => "something")         # Topic.many_comments_name_like("something")
 
 You can automatically paginate:
 
@@ -39,5 +49,6 @@ Oh, and you can combine scopes:
     self.search_scopes = CanSearch::SearchScopes.new(self, &block)
   end
 end
+
 
 Copyright (c) 2008-* Rick Olson, released under the MIT license

@@ -1,38 +1,33 @@
 module CanSearch
-  # Generates a named scope for searching by has_many associations.  You can specify
-  # the name of the association. It works with has_many and has_many :trough.
+  # Generates a named scope for searching by has_many associations.  You have specify
+  # to specify :on. It works with has_many and has_many :trough.
   #
   #   class User
   #     has_many :memberships
   #     has_many :organizations, :through => :memberships
   #     can_search do
-  #       scoped_by :organizations, :scope => :many
+  #       scoped_by :name, :scope => :many_like, :on => :organizations
   #     end
   #   end
   #
-  #   Topic.search(:organizations => 2)
+  #   Topic.search(name => "ruby user group")
   #
-  class ManyScope < BaseScope
+  class ManyLikeScope < BaseScope
 
     def initialize(model, name, options = {})
       super
-      reflection = @model.reflect_on_association(@name)
-      through_reflection= reflection.through_reflection
-      join_table = reflection.name       
-      join_table = through_reflection.name if through_reflection 
-      key = reflection.association_foreign_key
-      @named_scope = options[:named_scope] || "many_#{name}".to_sym
-      @model.named_scope @named_scope, lambda { |records|
-        {:joins => join_table,:conditions => {"#{join_table}.#{key}" => records}, :select => "DISTINCT #{@model.table_name}.*"}
+      @named_scope   = options[:named_scope] || "many_#{options[:on]}_#{name}_like".to_sym
+      @format      = options[:format]      || "%%%s%%"    
+      @model.named_scope @named_scope, lambda { |records| 
+        {:joins => options[:on],:conditions => ["#{options[:on]}.#{name} LIKE ?", @format % records], :select => "DISTINCT #{@model.table_name}.*"} 
       }
     end
-
+    
     def scope_for(finder, options = {})
-      query = options.delete(@name)
-      query.blank? ? finder : finder.send(@named_scope, query)
+      value = options.delete(@name)
+      value.blank? ? finder : finder.send(@named_scope, value)
     end
   end
-
   
-  SearchScopes.scope_types[:many] = ManyScope
+  SearchScopes.scope_types[:many_like] = ManyLikeScope
 end  
