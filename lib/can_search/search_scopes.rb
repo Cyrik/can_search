@@ -116,3 +116,5 @@ end
 
 send respond_to?(:require_dependency) ? :require_dependency : :require, 'can_search/date_range_scope'
 send respond_to?(:require_dependency) ? :require_dependency : :require, 'can_search/like_query_scope'
+send respond_to?(:require_dependency) ? :require_dependency : :require, 'can_search/many_scope'
+send respond_to?(:require_dependency) ? :require_dependency : :require, 'can_search/many_like_scope'
