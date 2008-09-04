@@ -45,10 +45,6 @@ Oh, and you can combine scopes:
 
   Topic.search :forum => 1, :forums => [2, 3], :created => (time1..time2)
 
-  def can_search(&block)
-    self.search_scopes = CanSearch::SearchScopes.new(self, &block)
-  end
-end
 
 
 Copyright (c) 2008-* Rick Olson, released under the MIT license
