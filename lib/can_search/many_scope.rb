@@ -13,7 +13,7 @@ module CanSearch
   #   Topic.search(:organizations => 2)
   #
   class ManyScope < BaseScope
-
+    attr_reader :on, :reflection, :through_reflection
     def initialize(model, name, options = {})
       super
       generate_attributes(options)
@@ -26,7 +26,10 @@ module CanSearch
       query = options.delete(@name)
       query.blank? ? finder : finder.send(@named_scope, query)
     end
-    
+    def ==(other)
+      super && other.on == @on && other.reflection == @reflection && \
+        other.through_reflection == @through_reflection
+    end    
     protected
     def generate_attributes(options)
       @on = options[:on] || @name
