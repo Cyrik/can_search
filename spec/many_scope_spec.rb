@@ -22,7 +22,8 @@ module CanSearch
       compare_records Record.search(@scope.name => [1,2,5,6]), [:default, :day, :week_1, :biweek_1]
     end    
     it "paginates records" do
-      compare_records Record.search(:page => nil, @scope.name => [1,2,5,6]), [:default,:day, :biweek_1]
+      compare_records Record.search(:page => nil, @scope.name => [1,2,5,6]),
+        [:default,:day, :biweek_1]
     end if ActiveRecord::Base.respond_to?(:paginate)    
     it "filters duplicates" do
       compare_records Record.search(@scope.name => [1,3]), [:default]
@@ -30,10 +31,12 @@ module CanSearch
   end
   describe "all Many Scopes with join table", :shared => true do
     it "finds multiple" do
-      compare_records Record.search(@scope.name => [1,2,5,6]), [:default, :day, :week_1, :biweek_1]
+      compare_records Record.search(@scope.name => [1,2,5,6]),
+        [:default, :day, :week_1, :biweek_1]
     end    
     it "paginates records" do
-      compare_records Record.search(:page => nil, @scope.name => [1,2,5,6]), [:default,:day, :week_1]
+      compare_records Record.search(:page => nil, @scope.name => [1,2,5,6]),
+        [:default,:day, :week_1]
     end if ActiveRecord::Base.respond_to?(:paginate)    
     it "filters duplicates" do
       compare_records Record.search(@scope.name => [1,2]), [:default, :day, :week_1, :biweek_1]
@@ -41,13 +44,16 @@ module CanSearch
   end
   describe "all Many Scopes with join table, with diffrent attribute", :shared => true do
     it "finds multiple" do
-      compare_records Record.search(@scope.name => ["first","second","fifth","sixth"]), [:default, :day, :week_1, :biweek_1]
+      compare_records Record.search(@scope.name => ["first","second","fifth","sixth"]),
+        [:default, :day, :week_1, :biweek_1]
     end    
     it "paginates records" do
-      compare_records Record.search(:page => nil, @scope.name => ["first","second","fifth","sixth"]), [:default,:day, :week_1]
+      compare_records Record.search(:page => nil, @scope.name => ["first","second","fifth","sixth"]),
+        [:default,:day, :week_1]
     end if ActiveRecord::Base.respond_to?(:paginate)    
     it "filters duplicates" do
-      compare_records Record.search(@scope.name => ["first","second"]), [:default, :day, :week_1, :biweek_1]
+      compare_records Record.search(@scope.name => ["first","second"]),
+        [:default, :day, :week_1, :biweek_1]
     end
   end  
   describe ManyScope do
@@ -57,7 +63,8 @@ module CanSearch
           Record.can_search do
             scoped_by :record_manys, :scope => :many
           end
-          @scope = ManyScope.new(Record, :record_manys, :scope => :many,:attribute => :id, :named_scope => :many_record_manys, :on => :record_manys)
+          @scope = ManyScope.new(Record, :record_manys, :scope => :many,\
+              :attribute => :id, :named_scope => :many_record_manys, :on => :record_manys)
         end
         it_should_behave_like "all Many Scopes"
         it_should_behave_like "all Many Scopes without join table"
@@ -68,7 +75,8 @@ module CanSearch
           Record.can_search do
             scoped_by :record_manys, :scope => :many, :attribute => :id
           end
-          @scope = ManyScope.new(Record, :record_manys,:scope => :many, :attribute => :id,  :named_scope => :many_record_manys, :on => :record_manys)
+          @scope = ManyScope.new(Record, :record_manys,:scope => :many,\
+              :attribute => :id,  :named_scope => :many_record_manys, :on => :record_manys)
         end
         
         it_should_behave_like "all Many Scopes"
@@ -80,7 +88,8 @@ module CanSearch
           Record.can_search do
             scoped_by :record_manys, :scope => :many, :attribute => :id, :named_scope => :here_i_am
           end
-          @scope = ManyScope.new(Record, :record_manys,:scope => :many, :attribute => :id,  :named_scope => :here_i_am, :on => :record_manys)
+          @scope = ManyScope.new(Record, :record_manys,:scope => :many,\
+              :attribute => :id,  :named_scope => :here_i_am, :on => :record_manys)
         end
         it_should_behave_like "all Many Scopes"
         it_should_behave_like "all Many Scopes without join table"
@@ -89,9 +98,11 @@ module CanSearch
       describe "(with custom attribute, finder name and table)" do
         before do
           Record.can_search do
-            scoped_by :master, :scope => :many, :attribute => :id, :named_scope => :here_i_am, :on => :record_manys
+            scoped_by :master, :scope => :many, :attribute => :id,\
+              :named_scope => :here_i_am, :on => :record_manys
           end
-          @scope = ManyScope.new(Record, :master,:scope => :many, :attribute => :id,  :named_scope => :here_i_am, :on => :record_manys)
+          @scope = ManyScope.new(Record, :master,:scope => :many,\
+              :attribute => :id,  :named_scope => :here_i_am, :on => :record_manys)
         end
         it_should_behave_like "all Many Scopes"
         it_should_behave_like "all Many Scopes without join table"

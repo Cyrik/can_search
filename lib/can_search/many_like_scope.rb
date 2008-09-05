@@ -14,7 +14,10 @@ module CanSearch
   #
   class ManyLikeScope < BaseScope
     attr_reader :on, :reflection, :format
-
+    # Pass in :on and :attribute to select which table and whcih attribute to 
+    # filther through. By default the name is used instead of :on and the attribute
+    # is set to :id. You can use the same :format as in like scopes
+    #
     def initialize(model, name, options = {})
       super
       @on = options[:on]

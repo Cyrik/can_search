@@ -45,6 +45,26 @@ Oh, and you can combine scopes:
 
   Topic.search :forum => 1, :forums => [2, 3], :created => (time1..time2)
 
+The options for every scope are: 
+
+:named_scope => "name"
+   "name" will be the name of the created scope
+:attribute => "attr"
+   "attr" will be the attribute the scope is applied on
+
+many_... scopes take
+:on => "association"
+   "association" is the ActiveRecord class that is joined
+
+like... scopes take 
+:format => "%s"
+   "%s" will be the format like is aplied on
+
+Be careful when using multiple ":scope => :many" in one search. Right now the
+:joins overwrite each other. The one with the alpabeticly lower name will be
+used. You will have to wait for Rails 2.2 or run rails edge to get a fix for this.
+See ticket: 
+http://rails.lighthouseapp.com/projects/8994/tickets/501-merge-joins-instead-of-clobbering-them 
 
 
 Copyright (c) 2008-* Rick Olson, released under the MIT license
