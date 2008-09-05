@@ -4,7 +4,7 @@ module CanSearch
   
   describe "all Many Like Scopes", :shared => true do
     include CanSearchSpecHelper
-    it "instantiate reference scope" do
+    it "instantiate many like scope" do
       Record.search_scopes[@scope.name].should == @scope
     end
 
