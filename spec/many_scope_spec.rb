@@ -115,7 +115,7 @@ module CanSearch
             scoped_by :record_many_throughs, :scope => :many
           end
           @scope = ManyScope.new(Record, :record_many_throughs, :scope => :many,\
-              :attribute => :record_many_through_id, :named_scope => :many_record_many_throughs,\
+              :attribute => :id, :named_scope => :many_record_many_throughs,\
               :on => :record_many_throughs)
         end
 
@@ -126,10 +126,10 @@ module CanSearch
       describe "(with custom attribute)" do
         before do
           Record.can_search do
-            scoped_by :record_many_throughs, :scope => :many, :attribute => :record_many_through_id
+            scoped_by :record_many_throughs, :scope => :many, :attribute => :id
           end
           @scope = ManyScope.new(Record, :record_many_throughs, :scope => :many,\
-              :attribute => :record_many_through_id, :named_scope => :many_record_many_throughs,\
+              :attribute => :id, :named_scope => :many_record_many_throughs,\
               :on => :record_many_throughs)
         end
         
@@ -140,11 +140,11 @@ module CanSearch
       describe "(with custom attribute and finder name)" do
         before do
           Record.can_search do
-            scoped_by :record_many_throughs, :scope => :many, :attribute => :record_many_through_id,\
+            scoped_by :record_many_throughs, :scope => :many, :attribute => :id,\
               :named_scope => :here_i_am
           end
           @scope = ManyScope.new(Record, :record_many_throughs, :scope => :many,\
-              :attribute => :record_many_through_id, :named_scope => :here_i_am,\
+              :attribute => :id, :named_scope => :here_i_am,\
               :on => :record_many_throughs)
         end
         
@@ -155,11 +155,11 @@ module CanSearch
       describe "(with custom attribute, finder name and table)" do
         before do
           Record.can_search do
-            scoped_by :something, :scope => :many, :attribute => :record_many_through_id,\
+            scoped_by :something, :scope => :many, :attribute => :id,\
               :named_scope => :here_i_am, :on => :record_many_throughs
           end
           @scope = ManyScope.new(Record, :something, :scope => :many,\
-              :attribute => :record_many_through_id, :named_scope => :here_i_am,\
+              :attribute => :id, :named_scope => :here_i_am,\
               :on => :record_many_throughs)
         end
         
@@ -169,11 +169,11 @@ module CanSearch
       describe "(with custom attribute, finder name and table)" do
         before do
           Record.can_search do
-            scoped_by :something, :scope => :many, :attribute => :record_many_through_id,\
+            scoped_by :something, :scope => :many, :attribute => :id,\
               :named_scope => :here_i_am, :on => :record_many_throughs
           end
           @scope = ManyScope.new(Record, :something, :scope => :many,\
-              :attribute => :record_many_through_id, :named_scope => :here_i_am,\
+              :attribute => :id, :named_scope => :here_i_am,\
               :on => :record_many_throughs)
         end
         

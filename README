@@ -56,6 +56,12 @@ many_... scopes take
 :on => "association"
    "association" is the ActiveRecord class that is joined
 
+many_scope takes
+:foreign_key => "foreign_key"
+  foreign_key will only be used if you are searching for the id on a has_many :through
+  assocation. You only need it if you have a non standard foreign_key in the :through
+  association.
+
 like... scopes take 
 :format => "%s"
    "%s" will be the format like is aplied on

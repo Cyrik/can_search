@@ -13,7 +13,7 @@ module CanSearch
   #   Topic.search(:organizations => 2)
   #
   class ManyScope < BaseScope
-    attr_reader :on, :reflection, :through_reflection
+    attr_reader :on, :join_association, :join_table
     # Pass in :on and :attribute to select which table and whcih attribute to 
     # filther through. By default the name is used instead of :on and the attribute
     # is set to :id
@@ -22,7 +22,8 @@ module CanSearch
       super
       generate_attributes(options)
       @model.named_scope @named_scope, lambda { |records| 
-        {:joins => @join_association,:conditions => {"#{@join_table}.#{@attribute}" => records}, :select => "DISTINCT #{@model.table_name}.*"} 
+        {:joins => @join_association,:conditions => {"#{@join_table}.#{@attribute}" => records},
+          :select => "DISTINCT #{@model.table_name}.*"} 
       }
     end
     
@@ -31,8 +32,8 @@ module CanSearch
       query.blank? ? finder : finder.send(@named_scope, query)
     end
     def ==(other)
-      super && other.on == @on && other.reflection == @reflection && \
-        other.through_reflection == @through_reflection
+      super && other.on == @on && other.join_association == @join_association && \
+        other.join_table == @join_table
     end    
     protected
     # By default we are using the given name as the search table name. it can be passed in
@@ -41,21 +42,25 @@ module CanSearch
     # association.
     #
     def generate_attributes(options)
-      @on = options[:on] || @name
-      @reflection = @model.reflect_on_association(@on)
-      @through_reflection= @reflection.through_reflection
-      @join_association = @reflection.name     
-      @join_table = @reflection.table_name.to_sym     
-      key = @reflection.klass.primary_key.to_sym          
-      if @through_reflection and (options[:attribute] == @reflection.association_foreign_key.to_sym \
-            or !options[:attribute])
-        @join_association = @through_reflection.name  
-        @join_table = @through_reflection.table_name.to_sym
-        key = @reflection.association_foreign_key.to_sym         
-      end
-      @attribute     = options[:attribute]   || key     
+      @on            = options[:on] || @name
       @named_scope   = options[:named_scope] || "many_#{@name}".to_sym
-   
+      @foreign_key   = options[:foreign_key]      
+      reflection = @model.reflect_on_association(@on)
+      through_reflection= reflection.through_reflection
+      primary_key = reflection.klass.primary_key.to_sym          
+      if through_reflection and (id_search?(options[:attribute],primary_key))
+        @attribute = options[:foreign_key] || reflection.association_foreign_key.to_sym 
+        reflection = through_reflection        
+      else
+        @attribute = options[:attribute] || primary_key         
+      end     
+      @join_association = reflection.name.to_sym
+      @join_table = reflection.table_name.to_sym      
+    end
+    
+    def id_search?(attribute,key)
+      return true if !attribute or attribute == key
+      return false
     end
   end
   
